@@ -1,0 +1,27 @@
+.cart {
+  padding: 20px;
+}
+
+.cart h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.cart ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart li {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.cart p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
