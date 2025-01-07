@@ -1,12 +1,20 @@
-import { Product } from '../models/Product';
-import { api } from '../utils/api';
+import axios from 'axios';
 
-export const fetchProducts = async (): Promise<Product[]> => {
-  const response = await api.get('/products');
+const apiClient = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export const fetchProducts = async () => {
+  const response = await apiClient.get('/products');
   return response.data;
 };
 
-export const fetchProductById = async (id: string): Promise<Product> => {
-  const response = await api.get(`/products/${id}`);
+// Fetch a single product by ID
+export const fetchProductById = async (id: string) => {
+  const response = await apiClient.get(`/products/${id}`);
   return response.data;
 };
+

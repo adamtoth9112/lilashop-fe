@@ -1,40 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import './ProductDetail.css';
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-};
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { fetchProductDetail } from '../slices/ProductSlice';
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { productDetail, loading, error } = useSelector((state: RootState) => state.products);
 
   useEffect(() => {
     if (id) {
-      // Mock fetch from an API based on the id
-      const fetchedProduct = {
-        id: parseInt(id),
-        name: `Product ${id}`,
-        price: 10.99 * parseInt(id), // Example pricing based on product ID
-        description: `This is a detailed description of Product ${id}.`,
-      };
-      setProduct(fetchedProduct);
+      dispatch(fetchProductDetail(Number(id)));
     }
-  }, [id]);
+  }, [dispatch, id]);
 
-  if (!product) return <div>Loading...</div>;
+  if (loading) return <p>Loading product details...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!productDetail) return <p>No product found</p>;
 
   return (
-    <div className="product-detail">
-      <h1>{product.name}</h1>
-      <p className="price">${product.price}</p>
-      <p>{product.description}</p>
-      <button>Add to Cart</button>
-    </div>
+      <div>
+        <h1>{productDetail.name}</h1>
+        <p>{productDetail.description}</p>
+        <p>Price: ${productDetail.price}</p>
+      </div>
   );
 };
 

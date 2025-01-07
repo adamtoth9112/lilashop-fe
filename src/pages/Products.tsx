@@ -1,40 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { fetchProducts } from '../slices/ProductSlice';
 import { Link } from 'react-router-dom';
-import './Products.css'
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-}
 
 const Products: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+    const dispatch = useDispatch<AppDispatch>();
+    const { products, loading, error } = useSelector((state: RootState) => state.products);
 
-  // You can replace this with an API call to fetch products
-  useEffect(() => {
-    const mockProducts: Product[] = [
-      { id: 1, name: 'Product 1', price: 99.99 },
-      { id: 2, name: 'Product 2', price: 149.99 },
-      { id: 3, name: 'Product 3', price: 199.99 },
-    ];
-    setProducts(mockProducts);
-  }, []);
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
 
-  return (
-    <div className="products">
-      <h1>Our Products</h1>
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>
-            <Link to={`/product/${product.id}`}>
-              {product.name} - ${product.price}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    if (loading) return <p>Loading products...</p>;
+    if (error) return <p>Error: {error}</p>;
+
+    return (
+        <div>
+            <h1>Products</h1>
+            <ul>
+                {products.map((product) => (
+                    <li key={product.id}>
+                        <Link to={`/product/${product.id}`}>{product.name}</Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export default Products;

@@ -1,42 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import './Cart.css';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-}
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store/store';
+import { removeFromCart } from '../slices/CartSlice';
 
 const Cart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const dispatch = useDispatch();
+  const { items, totalAmount } = useSelector((state: RootState) => state.cart);
 
-  // Mock cart items, this should be fetched from a cart service or local storage
-  useEffect(() => {
-    const mockCart: CartItem[] = [
-      { id: 1, name: 'Product 1', price: 99.99 },
-      { id: 2, name: 'Product 2', price: 149.99 },
-    ];
-    setCartItems(mockCart);
-  }, []);
-
-  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  if (items.length === 0) {
+    return <p>Your cart is empty.</p>;
+  }
 
   return (
-    <div className="cart">
-      <h1>Your Cart</h1>
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
-      ) : (
+      <div>
+        <h1>Shopping Cart</h1>
         <ul>
-          {cartItems.map((item) => (
-            <li key={item.id}>
-              {item.name} - ${item.price}
-            </li>
+          {items.map((item) => (
+              <li key={item.id}>
+            <span>
+              {item.name} - ${item.price} x {item.quantity}
+            </span>
+                <button onClick={() => dispatch(removeFromCart(item.id))}>Remove</button>
+              </li>
           ))}
         </ul>
-      )}
-      <h2>Total: ${total}</h2>
-    </div>
+        <h2>Total: ${totalAmount.toFixed(2)}</h2>
+      </div>
   );
 };
 
