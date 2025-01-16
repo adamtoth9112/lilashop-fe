@@ -22,12 +22,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Set up Docker for Minikube (local)
-      - name: Set up Docker for Minikube
-        run: |
-          eval $(minikube -p minikube docker-env)
-          docker info
-
       # Build Docker Image
       - name: Build Docker Image for Frontend
         run: |
